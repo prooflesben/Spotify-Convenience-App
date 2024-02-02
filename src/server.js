@@ -1,13 +1,15 @@
-const express = require("express");
-// Use axios instead 
-//var crypto = require('crypto');
+require('dotenv').config();
+const express = require("express"); 
+var crypto = require('crypto');
+var request = require('request');
 var cors = require('cors');
-// var querystring = require('querystring');
-// Use URLSearchParams instead
+var axios = require('axios');
+var querystring = require('querystring');
+
 var cookieParser = require('cookie-parser');
 
-const clientID = 'a5185fbaa08944e1a95c9c21909355f7';
-const clientSecret = '44d110280cc0456597cc274e2d6be3e3';
+const client_id = 'a5185fbaa08944e1a95c9c21909355f7';
+const client_secret = '44d110280cc0456597cc274e2d6be3e3';
 const redirect_uri = 'http://localhost:5173/callback';
 const generateRandomString = (length) => {
     return crypto
@@ -91,11 +93,14 @@ app.get('/login', function(req, res) {
           });
   
           // we can also pass the token to the browser to make requests from there
-          res.redirect('/#' +
-            querystring.stringify({
-              access_token: access_token,
-              refresh_token: refresh_token
-            }));
+          res.redirect("http://localhost:3000"
+            
+            // '/#' +
+            // querystring.stringify({
+            //   access_token: access_token,
+            //   refresh_token: refresh_token
+            // })
+            );
         } else {
           res.redirect('/#' +
             querystring.stringify({
@@ -134,7 +139,4 @@ app.get('/login', function(req, res) {
     });
   });
 
-  
-const PORT = process.env.PORT || 3000;
-
-app.listen(PORT,() => console.log(`Server is running on ${PORT}`));
+app.listen(5173);

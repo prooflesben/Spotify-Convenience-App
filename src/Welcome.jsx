@@ -14,6 +14,7 @@ function Welcome() {
       <p1>The button has been clicked {count} times</p1>
       <Button
         variant="primary"
+        href= "http://localhost:5173/login"
         onClick={() => {
           console.log(count);
           setCount(count + 1);
