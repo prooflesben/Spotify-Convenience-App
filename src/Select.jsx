@@ -32,7 +32,7 @@ function Select() {
       </Dropdown>
       <Button 
       variant="primary"
-      href= "http://localhost:5173/playlist">
+      href= "http://localhost:5173/playlist/1">
         Submit Range
       </Button>
     </div>

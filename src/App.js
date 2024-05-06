@@ -10,6 +10,7 @@ function App() {
         <Routes>
           <Route path="/select" element={<Select />} />
           <Route exact path="/" element={<Welcome />}></Route>
+          {/* <Route path="/show_playlist" element={<PlaylistView/>}></Route> */}
         </Routes>
       </BrowserRouter>
     </div>

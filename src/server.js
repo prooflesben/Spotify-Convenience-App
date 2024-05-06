@@ -4,12 +4,15 @@ var crypto = require("crypto");
 var request = require("request");
 var cors = require("cors");
 var axios = require("axios");
+var qs = require("qs");
 var querystring = require("querystring");
+const dayjs = require("dayjs");
+
 
 var cookieParser = require("cookie-parser");
 
 const client_id = "a5185fbaa08944e1a95c9c21909355f7";
-const client_secret = "44d110280cc0456597cc274e2d6be3e3";
+const client_secret = process.env.REACT_APP_CLIENT_SECRET;
 const redirect_uri = "http://localhost:5173/callback";
 var access_token = null;
 const generateRandomString = (length) => {
@@ -34,7 +37,7 @@ app.get("/login", function (req, res) {
     "playlist-modify-private playlist-modify-public user-library-read ugc-image-upload";
   res.redirect(
     "https://accounts.spotify.com/authorize?" +
-      querystring.stringify({
+      qs.stringify({
         response_type: "code",
         client_id: client_id,
         scope: scope,
@@ -44,24 +47,77 @@ app.get("/login", function (req, res) {
   );
 });
 
-app.get("/playlist", function (req, res) {
-  const url = "https://api.spotify.com/v1/me/playlists?limit=10&offset=0";
-  const config = {
-    headers: {
-      Authorization: "Bearer ${access_token}",
-    },
-  };
-  axios
-    .get(url, config)
-    .then((response) => {
-      console.log(response);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-
+app.get("/playlist/:months", async (req, res) => {
+  console.log("endpoint called");
+  let result = await createPlaylist(req.params.months);
+  //console.log(result);
+  console.log(result[result.length -1]);
   res.redirect("http://localhost:3000");
 });
+
+async function createPlaylist(months) {
+  const numFetch = 50;
+  let numOffset = 0;
+  let songs = [];
+  let total = -1;
+
+
+  while (!playlistComplete(songs, months, total)) {
+    console.log("in the loop");
+    const url =
+      "https://api.spotify.com/v1/me/tracks?" +
+      qs.stringify({
+        limit: numFetch,
+        offset: numOffset,
+      });
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${access_token}`
+      },
+    };
+
+    try {
+      const response = await axios.get(url, config);
+      console.log(response);
+      //console.log(response.items)
+      songs = songs.concat(response.data.items);
+      if (total === -1) total = response.data.total;
+      numOffset += numFetch;
+      console.log(songs.length);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  const currentTime = dayjs();
+  return songs.filter((song) => 
+    Math.abs(currentTime.diff(dayjs(song.added_at), 'month') <= months)
+ )
+}
+// Function to determine if the playlist has all the songs from a certain period and back
+function playlistComplete(songs, months, total) {
+  console.log("complete called");
+  if(songs == [] || total == -1){
+    console.log("false defult");
+    return false;
+  }
+
+  const currentTime = dayjs();
+  const lastSongTime = dayjs(songs[songs.length - 1].added_at);
+  if(Math.abs(currentTime.diff(lastSongTime, 'month') > months)){
+    console.log("true time diff");
+    return true;
+  }
+
+  if(songs.length >= total ){
+    console.log("true length of songs");
+    return true;
+  }
+  console.log("false where we havent met either condition");
+  return false;
+}
+
 app.get("/callback", function (req, res) {
   // your application requests refresh and access tokens
   // after checking the state parameter
@@ -73,7 +129,7 @@ app.get("/callback", function (req, res) {
   if (state === null || state !== storedState) {
     res.redirect(
       "/#" +
-        querystring.stringify({
+        qs.stringify({
           error: "state_mismatch",
         })
     );
@@ -116,7 +172,7 @@ app.get("/callback", function (req, res) {
           "http://localhost:3000/select"
 
           // '/#' +
-          // querystring.stringify({
+          // qs.stringify({
           //   access_token: access_token,
           //   refresh_token: refresh_token
           // })

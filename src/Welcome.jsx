@@ -11,7 +11,7 @@ function Welcome() {
       <p1>
         This is a react app that creates a playlist based on your liked songs.
       </p1>
-      <p1>The button has been clicked {count} times</p1>
+      {/* <p1>The button has been clicked {count} times</p1> */}
       <Button
         variant="primary"
         href= "http://localhost:5173/login"
