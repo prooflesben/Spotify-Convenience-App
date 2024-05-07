@@ -1,3 +1,5 @@
+// Seperate the routes into seperate files and store the more tokens in your .env files 
+// Also find a good way to hold and change the tokens
 require("dotenv").config();
 const express = require("express");
 var crypto = require("crypto");
@@ -7,7 +9,6 @@ var axios = require("axios");
 var qs = require("qs");
 var querystring = require("querystring");
 const dayjs = require("dayjs");
-
 
 var cookieParser = require("cookie-parser");
 
@@ -47,12 +48,13 @@ app.get("/login", function (req, res) {
   );
 });
 
+
 app.get("/playlist/:months", async (req, res) => {
-  console.log("endpoint called");
-  let result = await createPlaylist(req.params.months);
-  //console.log(result);
-  console.log(result[result.length -1]);
-  res.redirect("http://localhost:3000");
+  // You need handle the case of where the token hasn't been generated, the token has expired
+  // send back status codes so you know whats wrong
+  let songs = await createPlaylist(req.params.months);
+  res.send(songs);
+  //res.redirect("http://localhost:3000");
 });
 
 async function createPlaylist(months) {
@@ -79,34 +81,50 @@ async function createPlaylist(months) {
 
     try {
       const response = await axios.get(url, config);
-      console.log(response);
-      //console.log(response.items)
+      
       songs = songs.concat(response.data.items);
-      if (total === -1) total = response.data.total;
+      total = response.data.total;
       numOffset += numFetch;
-      console.log(songs.length);
     } catch (err) {
+      // You need to handle errors corectly
       console.log(err);
     }
   }
 
   const currentTime = dayjs();
-  return songs.filter((song) => 
-    Math.abs(currentTime.diff(dayjs(song.added_at), 'month') <= months)
+  songs = songs.filter((song) => 
+    Math.abs(currentTime.diff(dayjs(song.added_at), 'month') < months)
  )
+
+ songs = songs.map((song) => convertItem(song));
+
+ return songs;
+}
+
+// takes item and converts it to custom song json so less info is sent to the client side
+function convertItem(item){
+  const song = {
+    img : item.track.album.images[0].url,
+    album_name : item.track.album.name,
+    song_name : item.track.name,
+    artist : item.track.artists[0].name
+  };
+
+  return song;
 }
 // Function to determine if the playlist has all the songs from a certain period and back
 function playlistComplete(songs, months, total) {
   console.log("complete called");
-  if(songs == [] || total == -1){
+  if(songs.length == 0 || total === -1){
     console.log("false defult");
     return false;
   }
 
   const currentTime = dayjs();
   const lastSongTime = dayjs(songs[songs.length - 1].added_at);
-  if(Math.abs(currentTime.diff(lastSongTime, 'month') > months)){
+  if(Math.abs(currentTime.diff(lastSongTime, 'month') >= months)){
     console.log("true time diff");
+    console.log(Math.abs(currentTime.diff(lastSongTime, 'month')));
     return true;
   }
 
@@ -117,6 +135,8 @@ function playlistComplete(songs, months, total) {
   console.log("false where we havent met either condition");
   return false;
 }
+
+
 
 app.get("/callback", function (req, res) {
   // your application requests refresh and access tokens

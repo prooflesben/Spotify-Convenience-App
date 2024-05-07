@@ -32,6 +32,7 @@ function Select() {
       </Dropdown>
       <Button 
       variant="primary"
+      // need to get the menu selection and do validation
       href= "http://localhost:5173/playlist/1">
         Submit Range
       </Button>
