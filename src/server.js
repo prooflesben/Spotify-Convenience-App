@@ -47,14 +47,14 @@ app.get("/login", function (req, res) {
       })
   );
 });
-
+app.post("/createPlaylist", async (req, res))
 
 app.get("/playlist/:months", async (req, res) => {
   // You need handle the case of where the token hasn't been generated, the token has expired
   // send back status codes so you know whats wrong
   let songs = await createPlaylist(req.params.months);
-  res.send(songs);
-  //res.redirect("http://localhost:3000");
+
+  res.send(convertItem(songs));
 });
 
 async function createPlaylist(months) {
@@ -95,8 +95,6 @@ async function createPlaylist(months) {
   songs = songs.filter((song) => 
     Math.abs(currentTime.diff(dayjs(song.added_at), 'month') < months)
  )
-
- songs = songs.map((song) => convertItem(song));
 
  return songs;
 }
