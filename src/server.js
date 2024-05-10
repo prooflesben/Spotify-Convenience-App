@@ -16,6 +16,7 @@ const client_id = "a5185fbaa08944e1a95c9c21909355f7";
 const client_secret = process.env.REACT_APP_CLIENT_SECRET;
 const redirect_uri = "http://localhost:5173/callback";
 var access_token = null;
+var user_id = null;
 const generateRandomString = (length) => {
   return crypto.randomBytes(60).toString("hex").slice(0, length);
 };
@@ -47,17 +48,58 @@ app.get("/login", function (req, res) {
       })
   );
 });
-app.post("/createPlaylist", async (req, res))
+
+
+async function generatePlaylist(months,songs) {
+  updateId();
+  let playlistName = "";
+
+  if(months === 1){
+    playlistName = "1 Month Throwback Playlist";
+  }
+  else if(months === 3 ){
+    playlistName = "3 Month Throwback Playlist";
+  }
+  else if(months === 12){
+    playlistName = "1 Year Throwback Playlist";
+  }
+
+  // make the post request to create the playlist (another fucntion)
+
+  // make the post request to add the songs
+}
+
+async function updateId() {
+  if(user_id !== null) return;
+
+  var url = "https://api.spotify.com/v1/me"; 
+  const config = {
+    headers: {
+      Authorization: `Bearer ${access_token}`
+    },
+  };
+
+
+  try{
+    const profile = await axios.get(url,config);
+    user_id = profile.data.id;
+  }
+  catch(err){
+
+  }
+}
+async 
 
 app.get("/playlist/:months", async (req, res) => {
   // You need handle the case of where the token hasn't been generated, the token has expired
   // send back status codes so you know whats wrong
-  let songs = await createPlaylist(req.params.months);
+  let songs = await getSongs(req.params.months);
+  generatePlaylist()
 
   res.send(convertItem(songs));
 });
 
-async function createPlaylist(months) {
+async function getSongs(months) {
   const numFetch = 50;
   let numOffset = 0;
   let songs = [];
