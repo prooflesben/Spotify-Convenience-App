@@ -12,13 +12,27 @@ var access_token = null;
 var user_id = null;
 
 function updateToken() {
-    access_token = process.env.ACCESS_TOKEN;
+  access_token = process.env.ACCESS_TOKEN;
 }
+
+router.get("/:months", async (req, res) => {
+  // You need handle the case of where the token hasn't been generated, the token has expired
+  // send back status codes so you know whats wrong
+  let months = req.params.months;
+  console.log(`The playlist should be ${months}`)
+  let songs = await getSongs(months);
+  await generatePlaylist(
+    months,
+    songs.map((song) => song.track.uri)
+  );
+
+  res.send(songs.map((song) => convertItem(song)));
+});
 
 async function generatePlaylist(months, songs) {
   updateToken();
-  updateId();
-  let playlistName = "";
+  await updateId();
+  var playlistName;
 
   if (months === 1) {
     playlistName = "1 Month Throwback Playlist";
@@ -27,15 +41,83 @@ async function generatePlaylist(months, songs) {
   } else if (months === 12) {
     playlistName = "1 Year Throwback Playlist";
   }
+  console.log(months);
 
   // make the post request to create the playlist (another fucntion)
-
-  // make the post request to add the songs
+  try {
+    const playlistResponse = await postPlayist("1 Month Throwback Playlist");
+    let playlistId = playlistResponse.data.id;
+    console.log(await addSongs(playlistId, songs));
+  } catch (error) {
+    console.log(error);
+  }
 }
 
+async function addSongs(playlistId, songs) {
+  updateToken();
+  const url = `https://api.spotify.com/v1/playlists/${playlistId}/tracks`;
+  const config = {
+    headers: {
+      Authorization: `Bearer ${access_token}`,
+      'Content-Type': 'application/json'
+    }
+  };
+  const data ={
+    uris: songs,
+    position: 0,
+  }
+
+  try {
+    const addResponse = await axios.post(url, data, config);
+    if (addResponse.status === 401) {
+      await fetch("http://localhost:5173/refresh_token");
+      addSongs(playlistId, songs);
+    } else if (addResponse.status === 201) {
+      console.log("sucess adding songs");
+      return;
+    } else {
+      console.log("Other error in adding songs");
+    }
+  } catch (err) {
+    throw err;
+  }
+}
+
+async function postPlayist(name) {
+  updateToken();
+  const url = `https://api.spotify.com/v1/users/${user_id}/playlists`;
+  const config = {
+    headers: {
+      Authorization: `Bearer ${access_token}`,
+      'Content-Type': 'application/json'
+    }
+  };
+  const data = {
+    name: name,
+    description: `This is your ${name} created by the Ben's Spotify App`,
+    public: false,
+  };
+
+  try {
+    let response = await axios.post(url, data, config);
+
+    if (response.status === 201) {
+      console.log("success creating playlist");
+      return response;
+    } else if (response.status === 401) {
+      await fetch("http://localhost:5173/refresh_token");
+      // postPlayist(name);
+    } else {
+      console.log("Other error in creating songs");
+      console.log(response.status);
+      console.log(response.error.message);
+    }
+  } catch (err) {
+    throw err;
+  }
+}
 async function updateId() {
   updateToken();
-  if (user_id !== null) return;
 
   var url = "https://api.spotify.com/v1/me";
   const config = {
@@ -46,18 +128,23 @@ async function updateId() {
 
   try {
     const profile = await axios.get(url, config);
-    user_id = profile.data.id;
-  } catch (err) {}
+
+    if (profile.status === 200) {
+      console.log("user id fetched correctly");
+      user_id = profile.data.id;
+      return;
+    } else if (profile.status === 401) {
+      await fetch("http://localhost:5173/refresh_token");
+      updateId();
+    } else {
+      console.log("Other error in fetching user id");
+      console.log(profile.status);
+      console.log(profile.error.message);
+    }
+  } catch (err) {
+    throw err;
+  }
 }
-
-router.get("/:months", async (req, res) => {
-  // You need handle the case of where the token hasn't been generated, the token has expired
-  // send back status codes so you know whats wrong
-  let songs = await getSongs(req.params.months);
-  generatePlaylist();
-
-  res.send(songs.map((song) => convertItem(song)));
-});
 
 async function getSongs(months) {
   const numFetch = 50;
@@ -83,14 +170,20 @@ async function getSongs(months) {
 
     try {
       const response = await axios.get(url, config);
-
-      songs = songs.concat(response.data.items);
-      total = response.data.total;
-      numOffset += numFetch;
+      if (response.status === 200) {
+        songs = songs.concat(response.data.items);
+        total = response.data.total;
+        numOffset += numFetch;
+      } else if (response.status === 401) {
+        await fetch("http://localhost:5173/refresh_token");
+        continue;
+      } else {
+        console.log(response.status + " : error in fethcing songs");
+      }
     } catch (err) {
       // You need to handle errors corectly
-        console.log(access_token)
-       console.log("err");
+      console.log(access_token);
+      console.log(err.status);
     }
   }
 

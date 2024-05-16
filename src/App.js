@@ -11,7 +11,7 @@ function App() {
         <Routes>
           <Route path="/select" element={<Select />} />
           <Route exact path="/" element={<Welcome />} />
-          <Route path="/playlist/:timeframe" element={<PlaylistView />}/>
+          <Route exact path="/playlist/:timeframe" element={<PlaylistView />}/>
         </Routes>
       </BrowserRouter>
     </div>

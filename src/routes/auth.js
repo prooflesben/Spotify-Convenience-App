@@ -111,11 +111,15 @@ router.get("/refresh_token", function (req, res) {
     if (!error && response.statusCode === 200) {
       var access_token = body.access_token,
         refresh_token = body.refresh_token;
+        process.env.ACCESS_TOKEN = access_token;
       res.send({
         access_token: access_token,
         refresh_token: refresh_token,
       });
     }
+    else{
+        console.log("error refreshing token");
+      }
   });
 });
 
