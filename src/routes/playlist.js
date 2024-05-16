@@ -55,6 +55,19 @@ async function generatePlaylist(months, songs) {
 
 async function addSongs(playlistId, songs) {
   updateToken();
+  let songArray = [];
+  for(let i = 0; i < Math.ceil(songs.length/100); i++){
+    let curArray = [];
+    for(let j = 0; j < 100; j++){
+      let idx = (i * 100) + j;
+      if(idx >= songs.length) break;
+      
+      curArray.push(songs[idx]);
+    }
+    songArray.push(curArray);
+  }
+
+
   const url = `https://api.spotify.com/v1/playlists/${playlistId}/tracks`;
   const config = {
     headers: {
@@ -62,24 +75,30 @@ async function addSongs(playlistId, songs) {
       'Content-Type': 'application/json'
     }
   };
-  const data ={
-    uris: songs,
-    position: 0,
-  }
 
-  try {
-    const addResponse = await axios.post(url, data, config);
-    if (addResponse.status === 401) {
-      await fetch("http://localhost:5173/refresh_token");
-      addSongs(playlistId, songs);
-    } else if (addResponse.status === 201) {
-      console.log("sucess adding songs");
-      return;
-    } else {
-      console.log("Other error in adding songs");
+  for(let i = 0; i < songArray.length; i++){
+    let data ={
+      uris: songArray[i],
+      position: 0,
     }
-  } catch (err) {
-    throw err;
+  
+    try {
+      const addResponse = await axios.post(url, data, config);
+      if (addResponse.status === 201 || addResponse.status === 200) {
+        console.log(`sucess adding ${(i * 100) + 100} songs`);
+      } else if (addResponse.status === 401) {
+        await fetch("http://localhost:5173/refresh_token");
+        i-=1;
+        continue;
+      } 
+      else {
+        console.log("Other error in adding songs");
+        console.log(addResponse);
+        break;
+      }
+    } catch (err) {
+      throw err;
+    }
   }
 }
 
