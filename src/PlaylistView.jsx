@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import Song from './Song'; // Assuming Song is a component you've defined
 
 function PlaylistView() {
+  console.log("playlist rendered");
   const { timeframe } = useParams();
   const [songsJson, setSongsJson] = useState([]);
 
@@ -20,7 +21,7 @@ function PlaylistView() {
       }
     };
 
-    fetchData();
+     fetchData();
   }, [timeframe]);
 
   return (

@@ -34,18 +34,18 @@ async function generatePlaylist(months, songs) {
   await updateId();
   var playlistName;
 
-  if (months === 1) {
+  if (months == 1) {
     playlistName = "1 Month Throwback Playlist";
-  } else if (months === 3) {
+  } else if (months == 3) {
     playlistName = "3 Month Throwback Playlist";
-  } else if (months === 12) {
+  } else if (months == 12) {
     playlistName = "1 Year Throwback Playlist";
   }
   console.log(months);
 
   // make the post request to create the playlist (another fucntion)
   try {
-    const playlistResponse = await postPlayist("1 Month Throwback Playlist");
+    const playlistResponse = await postPlayist(playlistName);
     let playlistId = playlistResponse.data.id;
     console.log(await addSongs(playlistId, songs));
   } catch (error) {
@@ -201,8 +201,9 @@ async function getSongs(months) {
       }
     } catch (err) {
       // You need to handle errors corectly
-      console.log(access_token);
-      console.log(err.status);
+      //console.log(access_token);
+      throw err;
+      break;
     }
   }
 

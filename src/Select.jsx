@@ -38,7 +38,7 @@ function Select() {
       setSelectedOption("Please Select a time period");
     }
     else {
-     window.location.href = `http://localhost:3000/playlist/${convertSelected(selectedOption)}`; 
+     window.location.href = `http://localhost:3000/playlistView/${convertSelected(selectedOption)}`; 
     }
   }
 

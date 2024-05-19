@@ -33,6 +33,7 @@ router.get("/login", function (req, res) {
         scope: scope,
         redirect_uri: redirect_uri,
         state: state,
+        show_dialog: true,
       })
   );
 });
