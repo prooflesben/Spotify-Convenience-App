@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Song from './Song'; // Assuming Song is a component you've defined
+import '../App.css';
 
 function PlaylistView() {
   console.log("playlist rendered");
@@ -24,8 +25,9 @@ function PlaylistView() {
      fetchData();
   }, [timeframe]);
 
-  return (
-    <div>
+  return (<div>
+    <p>Below is your playlist</p>
+    <div className="scrollable-song-container">
       {songsJson.map((song, index) => (
         <Song
           key={index}
@@ -35,6 +37,7 @@ function PlaylistView() {
           artist={song.artist}
         />
       ))}
+    </div>
     </div>
   );
 }

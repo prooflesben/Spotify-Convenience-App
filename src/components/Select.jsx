@@ -6,7 +6,7 @@ import {
   Button,
 } from "react-bootstrap";
 import { useEffect, useState } from "react";
-import "./App.css";
+import "../App.css";
 import React from "react";
 
 function Select() {

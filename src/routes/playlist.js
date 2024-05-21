@@ -21,10 +21,12 @@ router.get("/:months", async (req, res) => {
   let months = req.params.months;
   console.log(`The playlist should be ${months}`)
   let songs = await getSongs(months);
-  await generatePlaylist(
-    months,
-    songs.map((song) => song.track.uri)
-  );
+  // await generatePlaylist(
+  //   months,
+  //   songs.map((song) => song.track.uri)
+  // );
+  console.log(songs.length);
+  
 
   res.send(songs.map((song) => convertItem(song)));
 });

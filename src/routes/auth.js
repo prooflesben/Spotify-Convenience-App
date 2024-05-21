@@ -25,6 +25,7 @@ router.get("/login", function (req, res) {
   // your application requests authorization
   var scope =
     "playlist-modify-private playlist-modify-public user-library-read ugc-image-upload";
+    console.log(client_id);
   res.redirect(
     "https://accounts.spotify.com/authorize?" +
       qs.stringify({

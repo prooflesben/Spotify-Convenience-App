@@ -49,3 +49,19 @@ body {
   height: 100vh;
 }
 
+
+
+.scrollable-song-container {
+  width: 100%; /* Set the width as required */
+  height: 500px; /* Set the height as required */
+  overflow-y: scroll; /* Enable vertical scrolling */
+  overflow-x: hidden; /* Disable horizontal scrolling (optional) */
+  border: 1px solid #ccc; /* Optional: Add a border to see the container boundaries */
+  padding: 10px; /* Optional: Add some padding */
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px; /* Adjust gap as needed */
+  justify-content: center; /* Center the items horizontally, can change based on requirement */
+  background-color: black;
+}
+
