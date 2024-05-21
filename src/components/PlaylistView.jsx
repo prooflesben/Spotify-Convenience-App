@@ -4,7 +4,6 @@ import Song from './Song'; // Assuming Song is a component you've defined
 import '../App.css';
 
 function PlaylistView() {
-  console.log("playlist rendered");
   const { timeframe } = useParams();
   const [songsJson, setSongsJson] = useState([]);
 
@@ -25,7 +24,7 @@ function PlaylistView() {
      fetchData();
   }, [timeframe]);
 
-  return (<div>
+  return (<div className="centered-container">
     <p>Below is your playlist</p>
     <div className="scrollable-song-container">
       {songsJson.map((song, index) => (
