@@ -21,7 +21,7 @@ function PlaylistView() {
       }
     };
 
-     fetchData();
+     await fetchData();
   }, [timeframe]);
 
   return (<div className="centered-container">
