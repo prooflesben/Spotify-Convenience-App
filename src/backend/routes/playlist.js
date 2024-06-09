@@ -14,21 +14,20 @@ var user_id = null;
 function updateToken() {
   access_token = process.env.ACCESS_TOKEN;
 }
-
+// Changes to make
+// 1. Send the client side the playlist id and a status code
+// 2. Post the songs to the songs table and post the songs with the playlist id(might have to do this in the add songs )
 router.get("/:months", async (req, res) => {
   // You need handle the case of where the token hasn't been generated, the token has expired
   // send back status codes so you know whats wrong
   let months = req.params.months;
   console.log(`The playlist should be ${months}`)
   let songs = await getSongs(months);
-  // await generatePlaylist(
-  //   months,
-  //   songs.map((song) => song.track.uri)
-  // );
-  console.log(songs.length);
-  
-
   res.send(songs.map((song) => convertItem(song)));
+  await generatePlaylist(
+    months,
+    songs.map((song) => song.track.uri)
+  );
 });
 
 async function generatePlaylist(months, songs) {
@@ -106,6 +105,8 @@ async function addSongs(playlistId, songs) {
 
 async function postPlayist(name) {
   updateToken();
+  const day = dayjs();
+  const createdDate = day.format('DD MMMM YYYY');
   const url = `https://api.spotify.com/v1/users/${user_id}/playlists`;
   const config = {
     headers: {
@@ -115,7 +116,7 @@ async function postPlayist(name) {
   };
   const data = {
     name: name,
-    description: `This is your ${name} created by the Ben's Spotify App`,
+    description: `This is your ${name} created by the Ben's Spotify App. Created on ${createdDate}`,
     public: false,
   };
 
@@ -229,6 +230,8 @@ function convertItem(item) {
   return song;
 }
 // Function to determine if the playlist has all the songs from a certain period and back
+// It seems like spotify always stores the songs in the order they are added
+// This makes it so the second condition is valid
 function playlistComplete(songs, months, total) {
   console.log("complete called");
   if (songs.length == 0 || total === -1) {

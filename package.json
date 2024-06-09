@@ -13,10 +13,13 @@
     "dayjs": "^1.11.11",
     "dotenv": "^16.4.1",
     "express": "^4.18.2",
+    "mysql": "^2.18.1",
+    "mysql2": "^3.9.7",
     "next": "^14.1.0",
     "react": "^18.2.0",
     "react-bootstrap": "^2.10.0",
     "react-dom": "^18.2.0",
+    "react-loader-spinner": "^6.1.6",
     "react-router": "^6.22.0",
     "react-router-dom": "^6.22.0",
     "react-scripts": "^5.0.1",
@@ -29,7 +32,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "devStart": "nodemon ./src/server.js"
+    "devStart": "nodemon ./src/backend/server.js"
   },
   "eslintConfig": {
     "extends": [

@@ -7,6 +7,7 @@ var request = require("request");
 var qs = require("qs");
 var querystring = require("querystring");
 var access_token = null;
+var refresh_token = null;
 
 const client_id = process.env.CLIENT_ID;
 const client_secret = process.env.CLIENT_SECRET;
@@ -25,7 +26,6 @@ router.get("/login", function (req, res) {
   // your application requests authorization
   var scope =
     "playlist-modify-private playlist-modify-public user-library-read ugc-image-upload";
-    console.log(client_id);
   res.redirect(
     "https://accounts.spotify.com/authorize?" +
       qs.stringify({
@@ -74,6 +74,7 @@ router.get("/callback", function (req, res) {
 
     request.post(authOptions, function (error, response, body) {
       if (!error && response.statusCode === 200) {
+        // eslint-disable-next-line no-unused-expressions
         (access_token = body.access_token),
           (refresh_token = body.refresh_token);
         process.env.ACCESS_TOKEN = access_token;
@@ -83,7 +84,7 @@ router.get("/callback", function (req, res) {
       } else {
         res.redirect(
           "/#" +
-            querystringify({
+          querystring({
               error: "invalid_token",
             })
         );

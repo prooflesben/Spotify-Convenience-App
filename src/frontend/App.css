@@ -72,7 +72,7 @@ body {
   height: 100vh; /* Make the container take the full height of the viewport */
   padding: 20px;
   box-sizing: border-box; /* Include padding and border in element's total width and height */
-  background-color: #191414; /* Black background */
-  color: #FFFFFF; /* White text */
+  background-color: #6b87b5; /* Black background */
+  color: #000000; /* White text */
 }
 
