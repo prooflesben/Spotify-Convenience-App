@@ -16,4 +16,6 @@ app
 app.use('/', authRouter);
 app.use('/playlist',playlistRouter)
 
-app.listen(5173);
+app.listen(5173, () => {
+  console.log('listening on port 5173')
+});
