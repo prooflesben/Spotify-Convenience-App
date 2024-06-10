@@ -1,0 +1,53 @@
+{
+  added_at: '2024-05-20T05:17:58Z',
+  track: {
+    album: {
+      album_type: 'album',
+      artists: [Array],
+      available_markets: [Array],
+      external_urls: [Object],
+      href: 'https://api.spotify.com/v1/albums/4WbFCzKALujxRNeoeLS5zO',
+      id: '4WbFCzKALujxRNeoeLS5zO',
+      images: [Array],
+      name: 'Thank Your Lucky Stars',
+      release_date: '2015-10-16',
+      release_date_precision: 'day',
+      total_tracks: 9,
+      type: 'album',
+      uri: 'spotify:album:4WbFCzKALujxRNeoeLS5zO'
+    },
+    artists: [ [Object] ],
+    available_markets: [
+      'AG', 'BB', 'BS', 'BZ',
+      'CA', 'CR', 'DM', 'DO',
+      'GD', 'GT', 'HN', 'HT',
+      'JM', 'KN', 'LC', 'MX',
+      'NI', 'PA', 'PR', 'SV',
+      'TT', 'US', 'VC'
+    ],
+    disc_number: 1,
+    duration_ms: 389760,
+    explicit: false,
+    external_ids: { isrc: 'USSUB1514207' },
+    external_urls: {
+      spotify: 'https://open.spotify.com/track/2w2d6csC24Y0pELr1rrqVV'
+    },
+    href: 'https://api.spotify.com/v1/tracks/2w2d6csC24Y0pELr1rrqVV',
+    id: '2w2d6csC24Y0pELr1rrqVV',
+    is_local: false,
+    name: 'Elegy to the Void',
+    popularity: 34,
+    preview_url: 'https://p.scdn.co/mp3-preview/c7e797e69f549cd8f11f57b0cbd86362c542f216?cid=a5185fbaa08944e1a95c9c21909355f7',
+    track_number: 7,
+    type: 'track',
+    uri: 'spotify:track:2w2d6csC24Y0pELr1rrqVV'
+  }
+}
+
+
+color pallets
+Spotify Green: #1DB954
+Black: #191414
+Dark Gray: #282828
+Light Gray: #535353
+White: #FFFFFF
