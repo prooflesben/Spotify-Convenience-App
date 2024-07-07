@@ -1,10 +1,12 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Song from "./Song"; // Assuming Song is a component you've defined
 import "../App.css";
 import Loader from "./Loader";
 import { useState, useEffect } from "react";
+import { Button } from "react-bootstrap";
 
 function PlaylistView() {
+  const navigate = useNavigate()
   const { timeframe } = useParams();
   const [songsJson, setSongsJson] = useState([]);
   const [songsLoaded, setSongsLoaded] = useState(false);
@@ -57,6 +59,7 @@ function PlaylistView() {
         <div className="scrollable-song-container">
           {loadSongs()}
         </div>
+        <Button >Restart App</Button>
       </div>
     </div>
   );

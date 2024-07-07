@@ -6,10 +6,12 @@ import {
   Button,
 } from "react-bootstrap";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom"
 import "../App.css";
 
 function Select() {
   const [selectedOption, setSelectedOption] = useState(null);
+  const navigate = useNavigate()
 
   const handleSelect = (eventKey) => {
     setSelectedOption(eventKey);
@@ -37,7 +39,7 @@ function Select() {
       setSelectedOption("Please Select a time period");
     }
     else {
-     window.location.href = `http://localhost:3000/playlistView/${convertSelected(selectedOption)}`; 
+     navigate(`/playlistView/${convertSelected(selectedOption)}`); 
     }
   }
 
